@@ -530,7 +530,13 @@ check_url()
 
 	local ret
 
-	{ curl -sIL -H "Accept-Encoding: zstd, br, gzip, deflate" --max-time "$url_check_timeout_secs" \
+	# Authenticate for github to increase threshold for rate limiting
+	local github_arg =()
+	if [[ $url =~ github\.com]]; then
+		github_arg+=('-u "${GITHUB_USER}:${GITHUB_TOKEN}"')
+	fi
+
+	{ curl "${github_arg[*]}" -sIL -H "Accept-Encoding: zstd, br, gzip, deflate" --max-time "$url_check_timeout_secs" \
 		--retry "$url_check_max_tries" "$url" &>"$curl_out"; ret=$?; } || true
 
 	# A transitory error, or the URL is incorrect,
