@@ -1,0 +1,19 @@
+name: Test PR sizing token 
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  test-pr-size-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print PR sizing limit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "HI"
+          gh api -H "Accept: application/vnd.github+json"   /rate_limit
